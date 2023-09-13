@@ -13,5 +13,4 @@ terraform {
       name = "iac-demo"
     }
   }
-
 }

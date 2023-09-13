@@ -1,6 +1,6 @@
 variable "prefix" {
   description = "Prefix used in the resources names"
-  default     = "ah-iac-demo"
+  default     = "iac-demo"
   type        = string
 }
 
@@ -11,20 +11,4 @@ variable "resource_group_name" {
 variable "location" {
   description = "Resource location"
   type        = string
-}
-
-variable "client_id" {
-  type = string
-}
-
-variable "client_secret" {
-  type = string
-}
-
-variable "subscription_id" {
-  type = string
-}
-
-variable "tenant_id" {
-  type = string
 }
