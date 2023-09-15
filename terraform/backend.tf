@@ -6,11 +6,15 @@ terraform {
     key                  = "terraform.tfstate"
   } */
 
-  backend "remote" {
+/*   backend "remote" {
     hostname     = "app.terraform.io"
     organization = "angel-nav"
     workspaces {
       name = "iac-demo"
     }
+  } */
+
+  backend "local"{
+    path = "./terraform.tfstate"
   }
 }

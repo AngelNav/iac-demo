@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mongo-app-chart.fullname" . }}-express
+  labels:
+    app: mongo-express
+  {{- include "mongo-app-chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.express.replicas }}
+  selector:
+    matchLabels:
+      app: mongo-express
+    {{- include "mongo-app-chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: mongo-express
+      {{- include "mongo-app-chart.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: ME_CONFIG_MONGODB_ADMINUSERNAME
+          valueFrom:
+            secretKeyRef:
+              key: mongo-root-username
+              name: {{ include "mongo-app-chart.fullname" . }}-db-secret
+        - name: ME_CONFIG_MONGODB_ADMINPASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: mongo-root-password
+              name: {{ include "mongo-app-chart.fullname" . }}-db-secret
+        - name: ME_CONFIG_MONGODB_SERVER
+          valueFrom:
+            configMapKeyRef:
+              key: database_url
+              name: {{ include "mongo-app-chart.fullname" . }}-db-configmap
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.express.mongoExpress.image.repository }}:{{ .Values.express.mongoExpress.image.tag
+          | default .Chart.AppVersion }}
+        name: mongo-express
+        ports:
+        - containerPort: 8081
+        resources: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "mongo-app-chart.fullname" . }}-express-service
+  labels:
+  {{- include "mongo-app-chart.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.expressService.type }}
+  selector:
+    app: mongo-express
+  {{- include "mongo-app-chart.selectorLabels" . | nindent 4 }}
+  ports:
+	{{- .Values.expressService.ports | toYaml | nindent 2 -}}

@@ -64,6 +64,27 @@ backend "remote" {
 
 4. Deploy apps into Azure Kubernetes Cluster
    
-   - On the terminal, run the following command in order to connect to your Kubernetes Cluster, make sure to type your `resource group` and your `kluster name`:
+    - On the terminal, run the following command in order to connect to your Kubernetes Cluster, make sure to type your `resource group` and your `kluster name`:
 
-      az aks get-credentials --resource-group myResourceGroup --name myAKSCluster
+      ```
+      az aks get-credentials --resource-group iac-demo --name iac-demo-aks
+      ```
+  
+    ### Packaging our k8s cluster using Helm
+
+      - **Installing helm**
+        follow the instructions [here](https://helm.sh/es/docs/intro/quickstart/)
+
+
+      - **Create chart**
+        
+        Run the following code in ``mongo-app-deployment`` directory to create a directory full of files and other directories
+        ```bash 
+        helm create <chart name>
+        ```
+
+        ```
+        $ ls mongo-app/
+        Chart.yaml  charts/  templates/  values.yaml
+        ```
+        

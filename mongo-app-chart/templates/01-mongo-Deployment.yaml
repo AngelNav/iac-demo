@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mongo-app-chart.fullname" . }}-db-deployment
+  labels:
+    app: mongodb
+  {{- include "mongo-app-chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.dbDeployment.replicas }}
+  selector:
+    matchLabels:
+      app: mongodb
+    {{- include "mongo-app-chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: mongodb
+      {{- include "mongo-app-chart.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: mongo-root-username
+              name: {{ include "mongo-app-chart.fullname" . }}-db-secret
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: mongo-root-password
+              name: {{ include "mongo-app-chart.fullname" . }}-db-secret
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.dbDeployment.mongodb.image.repository }}:{{ .Values.dbDeployment.mongodb.image.tag
+          | default .Chart.AppVersion }}
+        name: mongodb
+        ports:
+        - containerPort: 27017
+        resources: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "mongo-app-chart.fullname" . }}-db-service
+  labels:
+  {{- include "mongo-app-chart.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.dbService.type }}
+  selector:
+    app: mongodb
+  {{- include "mongo-app-chart.selectorLabels" . | nindent 4 }}
+  ports:
+	{{- .Values.dbService.ports | toYaml | nindent 2 -}}
