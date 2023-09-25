@@ -76,15 +76,53 @@ backend "remote" {
         follow the instructions [here](https://helm.sh/es/docs/intro/quickstart/)
 
 
-      - **Create chart**
+      - **Installing helmify**
         
-        Run the following code in ``mongo-app-deployment`` directory to create a directory full of files and other directories
+        Helmify reads a list of supported k8s objects from stdin and converts it to a helm chart. Designed to generate charts for k8s operators but not limited to. See installation [here](https://github.com/arttor/helmify)
+
+        Once you run helmify, Chart files will be created
         ```bash 
-        helm create <chart name>
+        helmify -f /mongo-app-deployment mongo-app-chart
         ```
 
         ```
-        $ ls mongo-app/
-        Chart.yaml  charts/  templates/  values.yaml
+        $ ls mongo-app-chart/
+        Chart.yaml  templates/  values.yaml
         ```
+
+        helmify is not perfect. You need to check all values and configuration were created correctly
+
         
+
+      - Running Helm
+
+        ```bash 
+        $ helm install release .
+          NAME: release
+          LAST DEPLOYED: Mon Sep 25 10:40:02 2023
+          NAMESPACE: default
+          STATUS: deployed
+          REVISION: 1
+          TEST SUITE: None
+        ```
+
+
+      - Then we check all is released into our AKS
+
+        ![kubectl get all](./images/kubectl-getall.png)
+
+      - Our application will be available on ``http://20.88.195.45:8081`` that is the ``EXTERNAL-IP`` of the Load Balancer
+
+        ![Mongo app](./images/mongo-app.png)
+
+
+**Done!** we released an app into an AKS
+
+- To delete all run
+
+```bash 
+$ helm uninstall release
+release "release" uninstalled
+```
+
+Also don't forget to delete terraform resources using ``terraform destroy``

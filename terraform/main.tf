@@ -25,14 +25,14 @@ module "aks_cluster" {
   source              = "./modules/aks"
   prefix              = var.prefix
   location            = var.location
-  resource_group_name = var.resource_group_name
+  resource_group_name = module.resource_group.resource_group_name
 }
 
 module "lb_ip" {
   source              = "./modules/public-ip"
   prefix              = var.prefix
   location            = var.location
-  resource_group_name = var.resource_group_name
+  resource_group_name = module.resource_group.resource_group_name
 }
 
 module "load_balancer" {
@@ -40,5 +40,5 @@ module "load_balancer" {
   prefix              = var.prefix
   location            = var.location
   public_ip_id        = module.lb_ip.id
-  resource_group_name = var.resource_group_name
+  resource_group_name = module.resource_group.resource_group_name
 }

@@ -1,5 +1,5 @@
 dbConfigmap:
-  databaseUrl: mongodb-service
+  databaseUrl: db-service
 dbDeployment:
   mongodb:
     image:
@@ -7,8 +7,8 @@ dbDeployment:
       tag: latest
   replicas: 1
 dbSecret:
-  mongoRootPassword: ""
-  mongoRootUsername: ""
+  mongoRootPassword: "dXNlcm5hbWU="
+  mongoRootUsername: "cGFzc3dvcmQ="
 dbService:
   ports:
   - port: 27017
@@ -18,12 +18,12 @@ dbService:
 express:
   mongoExpress:
     image:
-      repository: docker.io/community/mongo-express
+      repository: docker.io/mongo-express
       tag: latest
   replicas: 1
 expressService:
   ports:
-  - nodePort: 30000
+  - nodePort: 0 #30000
     port: 8081
     protocol: TCP
     targetPort: 8081

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: mongo-express
-        image: docker.io/community/mongo-express:latest
+        image: docker.io/mongo-express:latest
         ports:
         - containerPort: 8081
         env:

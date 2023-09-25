@@ -5,4 +5,4 @@ metadata:
   labels:
   {{- include "mongo-app-chart.labels" . | nindent 4 }}
 data:
-  database_url: {{ .Values.dbConfigmap.databaseUrl | quote }}
+  database_url: {{ printf "%s-%s" (include "mongo-app-chart.fullname" .) .Values.dbConfigmap.databaseUrl | quote }}
